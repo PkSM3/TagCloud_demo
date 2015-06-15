@@ -1132,6 +1132,7 @@ sigma.publicPrototype.startForceAtlas2 = function() {
       return;
     } 
 
+    $("#fa2_control").attr("src","libs/img2/tc_stop.png")
 
     $("#overviewzone").hide();
 
@@ -1182,6 +1183,8 @@ sigma.publicPrototype.stopForceAtlas2 = function() {
     this.forceatlas2.count=0;
   }
   this.removeGenerator('forceatlas2');
+
+  $("#fa2_control").attr("src","libs/img2/tc_play.png")
   updateMap();
   partialGraph.refresh();
   if(minimap) $("#overviewzone").show();

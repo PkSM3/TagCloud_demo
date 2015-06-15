@@ -826,3 +826,27 @@ function okClicked () {
     //document.title = document.getElementById ("xlInput").value;
     closeDialog ();
 }
+
+
+
+
+$("#fa2_control").click(function () {
+    
+    fa2enabled=true;
+    if(!isUndef(partialGraph.forceatlas2)) {
+
+        if(partialGraph.forceatlas2.active) {
+            partialGraph.stopForceAtlas2();
+            partialGraph.draw();
+            return;
+        } else {
+            partialGraph.startForceAtlas2();
+            return;
+        }
+
+    } else {
+        partialGraph.startForceAtlas2();
+        return;
+    } 
+});
+
