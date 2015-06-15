@@ -38,6 +38,52 @@ var Settings = {
 }
 
 
+// Function.prototype.index
+(function(reComments, reParams, reNames) {
+  Function.prototype.index = function(arrParamNames) {
+    var fnMe = this;
+    arrParamNames = arrParamNames
+      || (((fnMe + '').replace(reComments, '')
+           .match(reParams)[1] || '')
+          .match(reNames) || []);
+    return function(namedArgs) {
+      var args = [], i = arrParamNames.length;
+      args[i] = namedArgs;
+      while(i--) {
+        args[i] = namedArgs[arrParamNames[i]];
+      }
+      return fnMe.apply(this, args);
+    };
+  };
+})(
+  /\/\*[\s\S]*?\*\/|\/\/.*?[\r\n]/g,
+  /\(([\s\S]*?)\)/,
+  /[$\w]+/g
+);
+var AjaxSync = (function(TYPE, URL, DATA, CT , DT) {
+    var Result = []
+    TYPE = (!TYPE)?"GET":"POST"
+    if(DT && (DT=="jsonp" || DT=="json")) CT="application/json";
+    // console.log(TYPE, URL, DATA, CT , DT)
+    $.ajax({
+            type: TYPE,
+            url: URL,
+            data: DATA,
+            contentType: CT,
+            dataType: DT,
+            async: false,
+            success : function(data, textStatus, jqXHR) {
+                header = jqXHR.getResponseHeader("Content-Type")
+                header = (header)?"json":"gexf";
+                Result = { "OK":true , "format":header , "data":data };
+            },
+            error: function(exception) { 
+                Result = { "OK":false , "format":false , "data":exception.status };
+            }
+        });
+    return Result;
+}).index();
+
 
 // Defines what to do onclick the node... receives the node_div itself as element
 // element.text should have the node_label content.
@@ -70,7 +116,7 @@ function Click_Node(element) {
 
       // yo im the new gexf mofos \m/
       mainfile = [ "data/20150518t1052_phylograph.json" ] 
-      The_Main( mainfile );
+      The_Main( mainfile , "file");
       console.log(" - - -  -- - - - - - - -")
     },
     error: function(){ 
@@ -153,10 +199,18 @@ $(document).ready(function() {
 
         Filling_Divs( data.specific , "specific" , Settings.specific.options , Settings.specific.onclick)
 
-         $( window ).resize(function() {  ResizeTagClouds(); });
+         // $( window ).resize(function() {  ResizeTagClouds(); });
 
-        // Initiating TinawebJS:   input =  [ "/gexf/path/" ]
-        The_Main( [ Settings["initial_Map_query"] ] );
+        
+        // so this is a path to file: Settings["initial_Map_query"]
+        var RES = AjaxSync({ URL: Settings["initial_Map_query"] });
+        //Now in my RES["data"] i'll have my JSON
+        // RES["OK"] = true
+        // RES["data"] = THE JSON here
+        // RES["format"] 
+        if(RES["OK"])
+          The_Main( RES, "json_content" );
+
 
       },
       error: function(){ 

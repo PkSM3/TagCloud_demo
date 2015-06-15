@@ -57,7 +57,7 @@ var AjaxSync = (function(TYPE, URL, DATA, CT , DT) {
 }).index();
 
 
-var mainfile = "db.json";
+// var mainfile = "db.json";
 // var mainfile = "api.json";
 // var mainfile = [
 // //     "data/2-Terms-Authors-300nodes.gexf",

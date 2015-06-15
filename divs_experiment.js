@@ -86,17 +86,26 @@ function sigmaLimits( sigmacanvas ) {
 // //     "data/Elisa__Omodei.gexf",
 //     ];
 
-function The_Main( mainfile ) { 
+function The_Main( mainfile , source) { 
 
-    var urlfile_override = (isUndef(getUrlParam.file))?false:true;
-    if(urlfile_override) mainfile.unshift( getUrlParam.file );
 
-    console.log("THE URL.FILE PARAM:")
-    console.log(mainfile)
+    var RES;
 
-    var file = (Array.isArray(mainfile))?mainfile[0]:mainfile;
+    if (source=="file") {
 
-    var RES = AjaxSync({ URL: file });
+        var urlfile_override = (isUndef(getUrlParam.file))?false:true;
+        if(urlfile_override) mainfile.unshift( getUrlParam.file );
+
+        console.log("THE URL.FILE PARAM:")
+        console.log(mainfile)
+
+        var file = (Array.isArray(mainfile))?mainfile[0]:mainfile;
+
+        RES = AjaxSync({ URL: file });
+    }
+
+    if (source=="json_content")
+        RES = mainfile;
 
     if(RES["OK"]) {
 
